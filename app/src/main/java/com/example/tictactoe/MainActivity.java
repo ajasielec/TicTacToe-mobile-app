@@ -3,6 +3,7 @@ package com.example.tictactoe;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,11 +13,15 @@ public class MainActivity extends AppCompatActivity {
     private Button[][] buttons = new Button[3][3];
     private boolean playerXTurn = true;
     private int roundCount = 0;
+    private TextView gameStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        gameStatus = findViewById(R.id.gameStatus);
+        gameStatus.setText("");
 
         // button init
         for (int i = 0; i < 3; i++) {
@@ -32,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }
+
+        Button restartButton = findViewById(R.id.restartButton);
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetBoard();
+            }
+        });
     }
 
     private void onButtonClick(Button button) {
@@ -98,17 +111,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showWinner(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        resetBoard();
+        gameStatus.setText(message);
+        disableButtons();
+    }
+
+    private void disableButtons() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                buttons[i][j].setEnabled(false);
+            }
+        }
     }
 
     private void resetBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 buttons[i][j].setText("");
+                buttons[i][j].setEnabled(true);
             }
         }
         roundCount = 0;
         playerXTurn = true;
+        gameStatus.setText("");
     }
 }
